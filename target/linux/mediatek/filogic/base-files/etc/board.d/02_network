@@ -12,6 +12,7 @@ mediatek_setup_interfaces()
 	cmcc,rax3000m*|\
 	h3c,magic-nx30-pro|\
 	imou,lc-hx3001|\
+	konka,komi-a31|\
 	nokia,ea0326gmp)
 		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3" eth1
 		;;
@@ -23,6 +24,9 @@ mediatek_setup_interfaces()
 		;;
 	bananapi,bpi-r3)
 		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3 lan4 sfp2" "eth1 wan"
+		;;
+	bananapi,bpi-r3-mini)
+		ucidef_set_interfaces_lan_wan eth0 eth1
 		;;
 	bananapi,bpi-r4|\
 	bananapi,bpi-r4-poe)
@@ -64,6 +68,9 @@ mediatek_setup_interfaces()
 	xiaomi,mi-router-ax3000t|\
 	xiaomi,redmi-router-ax6000)
 		ucidef_set_interfaces_lan_wan "lan2 lan3 lan4" wan
+		;;
+	zyxel,ex5700-telenor)
+		ucidef_set_interfaces_lan_wan "lan4 lan1 lan2 lan3" eth1
 		;;
 	*)
 		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3 lan4" wan
@@ -139,6 +146,11 @@ mediatek_setup_macs()
 	xiaomi,redmi-router-ax6000)
 		wan_mac=$(mtd_get_mac_ascii Bdata ethaddr_wan)
 		label_mac=$wan_mac
+		;;
+	zyxel,ex5700-telenor)
+		label_mac=$(mtd_get_mac_binary "Factory" 0x4)
+		wan_mac=$label_mac
+		lan_mac=$(macaddr_add "$label_mac" 1)
 		;;
 	esac
 
